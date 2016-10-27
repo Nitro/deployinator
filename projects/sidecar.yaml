@@ -1,0 +1,28 @@
+---
+deploy:
+  requestId: sidecar
+  containerInfo:
+    type: DOCKER
+    docker:
+      network: HOST
+      image: gonitro/sidecar:latest
+      dockerParameters:
+      - key: label
+        value: SidecarDiscover=false
+      - key: cap-add
+        value: NET_ADMIN
+      - key: env
+        value: SIDECAR_SEEDS=10.3.18.24 10.3.19.17
+      - key: env
+        value: SIDECAR_LOGGING_LEVEL=info
+    volumes:
+    - containerPath: "/var/run/docker.sock"
+      hostPath: "/var/run/docker.sock"
+      mode: RW
+  resources:
+    cpus: 0.1
+    memoryMb: 128
+    numPorts: 1
+  deployInstanceCountPerStep: 1
+  deployStepWaitTimeMs: 10000
+  autoAdvanceDeploySteps: true
