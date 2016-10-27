@@ -42,6 +42,7 @@ struct Deployment
     id: { type: String, nilable: true },
     container_info: { type: ContainerInfo, key: "containerInfo" },
     resources: Hash(String, Int32 | Float64),
+    healthcheck_uri: { type: String, key: "healthcheckUri" },
 
     deploy_instance_count_per_step: {
       type: Int32,

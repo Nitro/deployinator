@@ -24,3 +24,4 @@ deploy:
     cpus: 0.1
     memoryMb: 128
     numPorts: 1
+  healthcheckUri: /
