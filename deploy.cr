@@ -50,8 +50,9 @@ class Deployinator
   end
 
   def handle_final_status(success)
-    puts "ERROR, job failure!".colorize(:red) unless success
-    puts "Done!".colorize(:green) if success
+    puts ("-"*40).colorize(:blue)
+    puts "\nERROR, job failure!".colorize(:red) unless success
+    puts "\nDone!".colorize(:green) if success
   end
 
   def prepare_payload(filename)
@@ -108,6 +109,7 @@ class Deployinator
       return (success = false) if status == :bad
       return (success = true) if status == :good && deploy.nil?
 
+      # Since we know we're not a Symbol or Nil, cast to DeploymentStatus
       this_deploy = deploy as DeploymentStatus
 
       out(" * Targetting: #{this_deploy.deploy_progress.target_active_instances} " +
