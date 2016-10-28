@@ -2,6 +2,7 @@ require "time"
 require "option_parser"
 
 require "./deployinator"
+require "./output"
 
 BASE_TIME = Time.new(2016, 10, 25)
 
@@ -19,5 +20,9 @@ if project.empty?
   abort "You must provide a project name!"
 end
 
-deployer = Deployinator.new(base_url: base_url, project: project)
+deployer = Deployinator.new(
+  base_url: base_url,
+  project: project,
+  output: TerminalStatusOutput.new
+)
 deployer.deploy
