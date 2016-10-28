@@ -137,3 +137,29 @@ struct DeploymentProgress
     }
   })
 end
+
+struct DeploymentHistory
+  translation_map({
+    deploy_result: {
+      type: DeploymentResult,
+      key: "deployResult"
+    }
+  })
+end
+
+struct DeploymentResult
+  translation_map({
+    deploy_state: { type: String, key: "deployState" },
+    message: { type: String, nilable: true },
+    deploy_failures: { type: Array(String), key: "deployFailures" },
+    timestamp: Int32
+  })
+end
+
+#{
+#  "deployResult": {
+#    "deployState": "OVERDUE",
+#    "message": "Only 0 of 3 tasks could be launched for deploy, there may not be enough resources to launch the remaining tasks",
+#    "deployFailures": [],
+#    "timestamp": 1477664964739
+#  },

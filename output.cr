@@ -2,7 +2,8 @@ require "colorize"
 
 class StatusOutput
   def print_deploy_request(deploy_request); end
-  def print_final_status(success); end
+  def print_job_status(success); end
+  def print_final_status(history); end
   def print_deploy_status(this_deploy); end
   def announce_deploy; end
   def finalize_deploy; end
@@ -17,10 +18,20 @@ class TerminalStatusOutput < StatusOutput
     print_hr
   end
 
-  def print_final_status(success)
+  def print_job_status(success)
     puts ("-"*40).colorize(:blue)
     puts "\nERROR, job failure!".colorize(:red) unless success
     puts "\nDone!".colorize(:green) if success
+  end
+
+  def print_final_status(history)
+    deploy = history.deploy_result
+    if deploy.deploy_state == "SUCCEEDED"
+      puts "#{deploy.deploy_state}".colorize(:green)
+      return
+    end
+
+    puts "#{deploy.deploy_state}: #{deploy.message}".colorize(:red)
   end
 
   def announce_deploy

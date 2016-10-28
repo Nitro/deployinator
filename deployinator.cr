@@ -13,7 +13,10 @@ class Deployinator
     raise "Invalid response: #{result.inspect}" unless valid_response?(result)
 
     job_status = follow_status(deploy_request)
-    @output.print_final_status(job_status)
+    @output.print_job_status(job_status)
+
+    deploy_result = get_completion_status(deploy_request)
+    @output.print_final_status(deploy_result)
   end
 
   def valid_response?(result)
@@ -80,5 +83,19 @@ class Deployinator
 
     @output.finalize_deploy
     success
+  end
+
+  def get_completion_status(deploy_request)
+    deploy = deploy_request.deploy
+
+    result = http_client(@base_url) do |client|
+      client.get("/singularity/api/history/request/#{deploy.request_id}/deploy/#{deploy.id}")
+    end
+
+    unless valid_response?(result)
+      raise "Error in response: #{result.inspect}"
+    end
+
+    DeploymentHistory.from_json(result.body)
   end
 end
