@@ -25,4 +25,5 @@ deployer = Deployinator.new(
   project: project,
   output: TerminalStatusOutput.new
 )
-deployer.deploy
+
+exit 1 unless deployer.deploy

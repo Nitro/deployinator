@@ -15,8 +15,10 @@ class Deployinator
     job_status = follow_status(deploy_request)
     @output.print_job_status(job_status)
 
-    deploy_result = get_completion_status(deploy_request)
-    @output.print_final_status(deploy_result)
+    history = get_completion_status(deploy_request)
+    @output.print_final_status(history)
+
+    history.deploy_result.deploy_state == "SUCCEEDED"
   end
 
   def valid_response?(result)
