@@ -21,7 +21,7 @@ class TerminalStatusOutput < StatusOutput
   def print_job_status(success)
     puts ("-"*40).colorize(:blue)
     puts "\nERROR, job failure!".colorize(:red) unless success
-    puts "\nDone!".colorize(:green) if success
+    puts "\nDone".colorize(:green) if success
   end
 
   def print_final_status(history)
