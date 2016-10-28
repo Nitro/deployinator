@@ -12,7 +12,7 @@ project  = ""
 OptionParser.parse! do |parser|
   parser.banner = "Usage: deploy [arguments]"
   parser.on("-u URL", "--url=URL", "The base URL to use") { |u| base_url = u }
-  parser.on("-p PROJECT", "--project=PROJECT", "Specifies the name to salute") { |p| project = p }
+  parser.on("-p PROJECT", "--project=PROJECT", "The project to deploy") { |p| project = p }
   parser.on("-h", "--help", "Show this help") { puts parser; exit }
 end
 
