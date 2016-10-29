@@ -52,16 +52,16 @@ class Deployinator
       )
     rescue e : JsonClient::InvalidResponse
       puts "Error in response: #{e.inspect}"
-      return [:bad, nil]
+      return {:bad, nil}
     end
 
     deployments = deployments.select do |d|
       d.deploy_marker["deployId"] == deploy_request.deploy.id
     end
 
-    return [:good, nil] if deployments.empty?
+    return {:good, nil} if deployments.empty?
 
-    [:good, deployments.first]
+    {:good, deployments.first}
   end
 
   def follow_status(deploy_request)
@@ -70,14 +70,14 @@ class Deployinator
     success = true
     loop do
       status, deploy = pending_deploy(deploy_request)
-      case [status, deploy]
+      case {status, deploy}
         when status == :bad then return (success = false)
-        when [:good, nil] then return (success = true)
+        when {:good, nil} then return (success = true)
         else
       end
 
-      # Since we know we're not a Symbol or Nil, cast to DeploymentStatus
-      this_deploy = deploy as DeploymentStatus
+      # Since we know we're not a Nil, cast to DeploymentStatus
+      this_deploy = deploy.as(DeploymentStatus)
 
       @output.print_deploy_status(this_deploy)
       return (success = false) unless this_deploy.deploy_progress.failed_deploy_tasks.empty?
