@@ -14,7 +14,7 @@ class TerminalStatusOutput < StatusOutput
     print_hr(extra_cr: false)
     out "[ Submitting: #{deploy_request.deploy.request_id}"
     out "[ Request Id: #{deploy_request.deploy.id}"
-    out "[ At: #{Time.now.to_s("%Y-%m-%d %H:%M:%S")}"
+    out "[ At: #{Time.now.to_s("%F %H:%M:%S")}"
     print_hr
   end
 
@@ -43,7 +43,7 @@ class TerminalStatusOutput < StatusOutput
   end
 
   def print_deploy_status(this_deploy)
-    out " * Targetting: #{this_deploy.deploy_progress.target_active_instances} " +
+    out " * #{Time.new.to_s("%F %H:%M:%S")} - Targetting: #{this_deploy.deploy_progress.target_active_instances} " +
         "instances - #{this_deploy.current_deploy_state}"
   end
 
