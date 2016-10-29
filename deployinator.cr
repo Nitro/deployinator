@@ -10,7 +10,9 @@ class Deployinator
     deploy_request = prepare_payload(filename)
 
     result = post_deploy(deploy_request)
-    raise "Invalid response: #{result.inspect}" unless valid_response?(result)
+    unless JsonClient.valid_response?(result)
+      raise "Invalid response: #{result.inspect}"
+    end
 
     job_status = follow_status(deploy_request)
     @output.print_job_status(job_status)
@@ -19,10 +21,6 @@ class Deployinator
     @output.print_final_status(history)
 
     history.deploy_result.deploy_state == "SUCCEEDED"
-  end
-
-  def valid_response?(result)
-    result.status_code == 200 && result.headers["Content-Type"] == "application/json"
   end
 
   def prepare_payload(filename)
@@ -35,11 +33,11 @@ class Deployinator
     payload = deploy_request.to_json
     @output.print_deploy_request(deploy_request)
 
-    result = http_client(@base_url) do |client|
+    result = JsonClient.http_client(@base_url) do |client|
       client.post("/singularity/api/deploys", body: payload)
     end
 
-    unless result.status_code == 200
+    unless JsonClient.valid_response?(result)
       abort "Something went wrong!\n#{result.inspect}"
     end
 
@@ -47,16 +45,17 @@ class Deployinator
   end
 
   def pending_deploy(deploy_request)
-    result = http_client(@base_url) do |client|
-      client.get("/singularity/api/deploys/pending")
-    end
-
-    unless valid_response?(result)
-      puts "Error in response: #{result.inspect}"
+    begin
+      deployments = JsonClient.get(
+        @base_url, "/singularity/api/deploys/pending",
+        Array(DeploymentStatus)
+      )
+    rescue e : JsonClient::InvalidResponse
+      puts "Error in response: #{e.inspect}"
       return [:bad, nil]
     end
 
-    deployments = Array(DeploymentStatus).from_json(result.body).select do |d|
+    deployments = deployments.select do |d|
       d.deploy_marker["deployId"] == deploy_request.deploy.id
     end
 
@@ -71,8 +70,11 @@ class Deployinator
     success = true
     loop do
       status, deploy = pending_deploy(deploy_request)
-      return (success = false) if status == :bad
-      return (success = true) if status == :good && deploy.nil?
+      case [status, deploy]
+        when status == :bad then return (success = false)
+        when [:good, nil] then return (success = true)
+        else
+      end
 
       # Since we know we're not a Symbol or Nil, cast to DeploymentStatus
       this_deploy = deploy as DeploymentStatus
@@ -89,15 +91,9 @@ class Deployinator
 
   def get_completion_status(deploy_request)
     deploy = deploy_request.deploy
-
-    result = http_client(@base_url) do |client|
-      client.get("/singularity/api/history/request/#{deploy.request_id}/deploy/#{deploy.id}")
-    end
-
-    unless valid_response?(result)
-      raise "Error in response: #{result.inspect}"
-    end
-
-    DeploymentHistory.from_json(result.body)
+    JsonClient.get(@base_url,
+      "/singularity/api/history/request/#{deploy.request_id}/deploy/#{deploy.id}",
+      DeploymentHistory
+    )
   end
 end
