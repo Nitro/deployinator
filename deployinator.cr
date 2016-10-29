@@ -1,5 +1,5 @@
 require "./data"
-require "./http"
+require "./json_client"
 
 class Deployinator
 
