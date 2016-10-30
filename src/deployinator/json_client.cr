@@ -2,25 +2,24 @@ require "http/client"
 require "uri"
 
 module Deployinator
-  module JsonClient
+  class JsonClient(T)
     class InvalidResponse < Exception; end
 
-    macro request_and_decode(method, base_url, path, type)
-      result = Deployinator::JsonClient.http_client({{ base_url }}) do |client|
-        client.{{ method.id }}({{ path }})
+    def initialize(@type : T); end
+
+    def get(base_url, path)
+      result = self.class.http_client(base_url) do |client|
+        client.get(path)
       end
 
-      unless Deployinator::JsonClient.valid_response?(result)
-        raise Deployinator::JsonClient::InvalidResponse.new(result.body)
+      unless self.class.valid_response?(result)
+        raise InvalidResponse.new(result.body)
       end
 
-      {{ type }}.from_json(result.body)
+      @type.from_json(result.body)
     end
 
-    macro get(base_url, path, type)
-      JsonClient.request_and_decode(:get, {{ base_url }}, {{ path }}, {{ type }})
-    end
-
+    # CLASS methods
     def self.valid_response?(result)
       result.status_code == 200 && result.headers["Content-Type"] == "application/json"
     end

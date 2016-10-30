@@ -47,9 +47,8 @@ module Deployinator
 
     def pending_deploy(deploy_request)
       begin
-        deployments = JsonClient.get(
-          @base_url, "/singularity/api/deploys/pending",
-          Array(DeploymentStatus)
+        deployments = JsonClient.new(Array(DeploymentStatus)).get(
+          @base_url, "/singularity/api/deploys/pending"
         )
       rescue e : JsonClient::InvalidResponse
         puts "Error in response: #{e.inspect}"
@@ -92,9 +91,8 @@ module Deployinator
 
     def get_completion_status(deploy_request)
       deploy = deploy_request.deploy
-      JsonClient.get(@base_url,
-        "/singularity/api/history/request/#{deploy.request_id}/deploy/#{deploy.id}",
-        DeploymentHistory
+      JsonClient.new(DeploymentHistory).get(@base_url,
+        "/singularity/api/history/request/#{deploy.request_id}/deploy/#{deploy.id}"
       )
     end
   end
