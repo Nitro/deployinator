@@ -20,7 +20,7 @@ module Deployinator
     end
 
     def print_job_status(success)
-      puts ("-"*40).colorize(:blue)
+      print_hr(extra_cr: false)
       puts "\nERROR, job failure!".colorize(:red) unless success
       puts "\nDone".colorize(:green) if success
     end
@@ -36,7 +36,7 @@ module Deployinator
     end
 
     def announce_deploy
-      puts "Deploying! -----------------------------".colorize(:blue)
+      puts ("Deploying! " + "-"*68).colorize(:blue)
     end
 
     def finalize_deploy
@@ -49,7 +49,7 @@ module Deployinator
     end
 
     def print_hr(extra_cr=true)
-      puts ("-"*40).colorize(:blue)
+      puts ("-"*80).colorize(:blue)
       puts "\n" if extra_cr
     end
 
