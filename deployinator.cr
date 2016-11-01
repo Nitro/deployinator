@@ -1,7 +1,6 @@
 require "time"
 require "option_parser"
-
-BASE_TIME = Time.new(2016, 10, 25)
+require "./src/deployinator"
 
 base_url = "http://dev-singularity-sick-sing.uw2.nitro.us:7099"
 project  = ""
