@@ -1,13 +1,13 @@
 require "colorize"
 
 module Deployinator
-  class StatusOutput
-    def print_deploy_request(deploy_request); end
-    def print_job_status(success); end
-    def print_final_status(history); end
-    def print_deploy_status(this_deploy); end
-    def announce_deploy; end
-    def finalize_deploy; end
+  abstract class StatusOutput
+    abstract def print_deploy_request(deploy_request)
+    abstract def print_job_status(success)
+    abstract def print_final_status(history)
+    abstract def print_deploy_status(this_deploy)
+    abstract def announce_deploy
+    abstract def finalize_deploy
   end
 
   class TerminalStatusOutput < StatusOutput
