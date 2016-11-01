@@ -20,6 +20,18 @@ module Deployinator
     end
 
     # CLASS methods
+    def self.post(base_url, path, obj)
+      result = JsonClient.http_client(base_url) do |client|
+        client.post(path, body: obj.to_json)
+      end
+
+      unless JsonClient.valid_response?(result)
+        raise InvalidResponse.new(result.body)
+      end
+
+      result.status_code
+    end
+
     def self.valid_response?(result)
       result.status_code == 200 && result.headers["Content-Type"] == "application/json"
     end

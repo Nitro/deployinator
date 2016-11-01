@@ -10,10 +10,7 @@ module Deployinator
       filename = "projects/#{@project}.yaml"
       deploy_request = prepare_payload(filename)
 
-      result = post_deploy(deploy_request)
-      unless JsonClient.valid_response?(result)
-        raise "Invalid response: #{result.inspect}"
-      end
+      post_deploy(deploy_request)
 
       job_status = follow_status(deploy_request)
       @output.print_job_status(job_status)
@@ -31,18 +28,8 @@ module Deployinator
     end
 
     def post_deploy(deploy_request)
-      payload = deploy_request.to_json
       @output.print_deploy_request(deploy_request)
-
-      result = JsonClient.http_client(@base_url) do |client|
-        client.post("/singularity/api/deploys", body: payload)
-      end
-
-      unless JsonClient.valid_response?(result)
-        abort "Something went wrong!\n#{result.inspect}"
-      end
-
-      result
+      JsonClient.post(@base_url, "/singularity/api/deploys", deploy_request)
     end
 
     def pending_deploy(deploy_request)
