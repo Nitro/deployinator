@@ -1,5 +1,5 @@
-require "./data"
-require "./json_client"
+
+BASE_TIME = Time.new(2016, 10, 25)
 
 module Deployinator
   class Orchestrator
