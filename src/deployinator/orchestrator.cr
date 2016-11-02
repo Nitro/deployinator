@@ -57,9 +57,10 @@ module Deployinator
       success = true
       loop do
         status, deploy = pending_deploy(deploy_request)
-        case {status, deploy}
+        case
           when status == :bad then return (success = false)
-          when {:good, nil} then return (success = true)
+          when {status, deploy} == {:good, nil} then return (success = true)
+          when deploy.nil? then return (success = false)
           else
         end
 

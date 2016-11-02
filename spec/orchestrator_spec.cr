@@ -1,5 +1,6 @@
 require "./spec_helper"
 
+
 Spec2.describe Deployinator::Orchestrator do
   let(output)   { Deployinator::StatusOutput.new }
   let(deployer) { Deployinator::Orchestrator.new(
@@ -21,6 +22,24 @@ Spec2.describe Deployinator::Orchestrator do
     it "generates a sane id" do
       expect(payload.deploy.id.nil?).to be_false
       expect(payload.deploy.id.as(String).to_i).to_be > 10000 < 1000000
+    end
+  end
+
+  describe "Waiting on results" do
+    class StubbedOrchestrator < Deployinator::Orchestrator
+      def pending_deploy(deploy_request)
+        {:good, nil}
+      end
+    end
+
+    let(deployer) { StubbedOrchestrator.new(
+        "http://example.com", "nginx", output
+      )
+    }
+    let(request) { deployer.prepare_payload("projects/nginx.yaml") }
+
+    it "returns a result from watching for job completion" do
+      expect(deployer.follow_status(request)).to be_true
     end
   end
 end
