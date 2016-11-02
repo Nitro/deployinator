@@ -29,7 +29,9 @@ module Deployinator
 
     def post_deploy(deploy_request)
       @output.print_deploy_request(deploy_request)
-      JsonClient.post(@base_url, "/singularity/api/deploys", deploy_request)
+      with_retries(3) do
+        JsonClient.post(@base_url, "/singularity/api/deploys", deploy_request)
+      end
     end
 
     def pending_deploy(deploy_request)
@@ -82,6 +84,25 @@ module Deployinator
       JsonClient.new(DeploymentHistory).get(@base_url,
         "/singularity/api/history/request/#{deploy.request_id}/deploy/#{deploy.id}"
       )
+    end
+
+    def with_retries(count, &block)
+      error = nil
+      result = nil
+
+      1.upto(count) do |i|
+        begin
+          result = yield
+          error = nil
+          break
+        rescue e : Exception
+          puts "Retrying #{i} of #{count}".colorize(:yellow)
+          error = e
+        end
+      end
+
+      raise error unless error.nil?
+      result
     end
   end
 end
