@@ -4,6 +4,7 @@ require "uri"
 module Deployinator
   class JsonClient(T)
     class InvalidResponse < Exception; end
+    class TimeOut < Exception; end
 
     def initialize(@type : T); end
 
@@ -40,9 +41,9 @@ module Deployinator
       uri = URI.parse(url)
 
       client = HTTP::Client.new(host: uri.host.to_s, port: uri.port, tls: tls).tap do |c|
-        c.connect_timeout = 120
-        c.read_timeout    = 120
-        c.dns_timeout     = 30
+        c.connect_timeout = 10
+        c.read_timeout    = 30
+        c.dns_timeout     = 10
 
         c.before_request do |request|
           request.headers["Content-Type"] = "application/json"
@@ -54,6 +55,8 @@ module Deployinator
       result = yield client
       client.close
       result
+    rescue e : IO::Timeout
+      raise TimeOut.new(e.message)
     end
   end
 end
