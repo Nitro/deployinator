@@ -37,7 +37,7 @@ module Deployinator
     end
 
     def print_mesos_tasks(tasks)
-      puts ("\nMesos Tasks! " + "-"*67).colorize(:blue)
+      puts ("\nMesos Tasks " + "-"*68).colorize(:blue)
 
       tasks.each do |t|
         status = t.statuses.map { |s| s.state }.join(", ")
