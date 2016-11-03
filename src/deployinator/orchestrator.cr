@@ -66,11 +66,8 @@ module Deployinator
           else
         end
 
-        # Since we know we're not a Nil, cast to DeploymentStatus
-        this_deploy = deploy.as(DeploymentStatus)
-
-        @output.print_deploy_status(this_deploy)
-        return (success = false) unless this_deploy.deploy_progress.failed_deploy_tasks.empty?
+        @output.print_deploy_status(deploy)
+        return (success = false) unless deploy.deploy_progress.failed_deploy_tasks.empty?
 
         sleep 1
       end
