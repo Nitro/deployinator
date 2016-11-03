@@ -4,7 +4,7 @@ BASE_TIME = Time.new(2016, 10, 25)
 module Deployinator
   class Orchestrator
 
-    def initialize(@base_url : String, @project : String, @output : StatusOutput); end
+    def initialize(@base_url : String, @mesos_base_url : String, @project : String, @output : StatusOutput); end
 
     def deploy
       filename = "projects/#{@project}.yaml"
@@ -19,6 +19,9 @@ module Deployinator
       @output.print_final_status(history)
 
       history.deploy_result.deploy_state == "SUCCEEDED"
+
+      mesos_tasks = fetch_mesos_tasks(deploy_request)
+      @output.print_mesos_tasks(mesos_tasks)
     end
 
     def prepare_payload(filename)
@@ -74,6 +77,11 @@ module Deployinator
 
       @output.finalize_deploy
       success
+    end
+
+    def fetch_mesos_tasks(deploy_request)
+      mesos_status = MesosStatusManager.new(@mesos_base_url)
+      mesos_status.fetch(deploy_request.deploy.request_id, deploy_request.deploy.id)
     end
 
     def get_completion_status(deploy_request)

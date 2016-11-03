@@ -4,7 +4,8 @@ require "./spec_helper"
 Spec2.describe Deployinator::Orchestrator do
   let(output)   { Deployinator::StatusOutput.new }
   let(deployer) { Deployinator::Orchestrator.new(
-      "http://example.com", "nginx", output
+      "http://example.com", "http://example.com/mesos",
+      "nginx", output
     )
   }
 
@@ -33,7 +34,8 @@ Spec2.describe Deployinator::Orchestrator do
     end
 
     let(deployer) { StubbedOrchestrator.new(
-        "http://example.com", "nginx", output
+        "http://example.com", "http://example.com/mesos",
+        "nginx", output
       )
     }
     let(request) { deployer.prepare_payload("projects/nginx.yaml") }

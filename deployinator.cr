@@ -2,14 +2,16 @@ require "time"
 require "option_parser"
 require "./src/deployinator"
 
-base_url = "http://dev-singularity-sick-sing.uw2.nitro.us:7099"
+singularity_base_url = "http://dev-singularity-sick-sing.uw2.nitro.us:7099"
+mesos_base_url = "http://dev-singularity-regular-throat.uw2.nitro.us:5050"
 project  = ""
 
 OptionParser.parse! do |parser|
   parser.banner = "Usage: deployinator [arguments]"
-  parser.on("-u URL", "--url=URL", "The base URL to use") { |u| base_url = u }
+  parser.on("-u URL", "--url=URL", "The Singularity base URL to use")   { |u| singularity_base_url = u }
+  parser.on("-m URL", "--mesos=URL", "The Mesos base URL to use")       { |u| mesos_base_url = u }
   parser.on("-p PROJECT", "--project=PROJECT", "The project to deploy") { |p| project = p }
-  parser.on("-h", "--help", "Show this help") { puts parser; exit }
+  parser.on("-h", "--help", "Show this help")                           { puts parser; exit }
 end
 
 if project.empty?
@@ -17,7 +19,8 @@ if project.empty?
 end
 
 deployer = Deployinator::Orchestrator.new(
-  base_url: base_url,
+  base_url: singularity_base_url,
+  mesos_base_url: mesos_base_url,
   project: project,
   output: Deployinator::TerminalStatusOutput.new
 )

@@ -6,6 +6,7 @@ module Deployinator
     def print_job_status(success); end
     def print_final_status(history); end
     def print_deploy_status(this_deploy); end
+    def print_mesos_tasks(tasks); end
     def announce_deploy; end
     def finalize_deploy; end
   end
@@ -35,8 +36,24 @@ module Deployinator
       puts "#{deploy.deploy_state}: #{deploy.message}".colorize(:red)
     end
 
+    def print_mesos_tasks(tasks)
+      puts ("\nMesos Tasks! " + "-"*67).colorize(:blue)
+
+      tasks.each do |t|
+        status = t.statuses.map { |s| s.state }.join(", ")
+        color = if status =~ /TASK_RUNNING$/
+          :green
+        else
+          :red
+        end
+
+        puts "#{t.id}: #{status.colorize(:green)}"
+      end
+      print_hr
+    end
+
     def announce_deploy
-      puts ("Deploying! " + "-"*68).colorize(:blue)
+      puts ("Deploying! " + "-"*69).colorize(:blue)
     end
 
     def finalize_deploy
