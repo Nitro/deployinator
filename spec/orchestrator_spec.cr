@@ -10,7 +10,7 @@ Spec2.describe Deployinator::Orchestrator do
   }
 
   describe "Building the payload" do
-    let(payload) { deployer.prepare_payload("projects/nginx.yaml") }
+    let(payload) { deployer.prepare_payload("spec/fixtures/nginx.yaml") }
 
     it "returns the right class" do
       expect(payload).to be_a(Deployinator::DeployWrapper)

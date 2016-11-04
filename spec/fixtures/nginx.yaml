@@ -1,0 +1,27 @@
+---
+deploy:
+  requestId: nginx
+  containerInfo:
+    type: DOCKER
+    docker:
+      image: nginx:latest
+      network: BRIDGE
+      portMappings:
+        - containerPortType: LITERAL
+          containerPort: 80
+          hostPortType: FROM_OFFER
+          hostPort: 0
+      dockerParameters:
+        - key: label
+          value: ServiceName=nginx
+        - key: label
+          value: ServicePort_80=11000
+        - key: label
+          value: HealthCheck=HttpGet
+        - key: label
+          value: HealthCheckArgs=http://{{ host }}:{{ tcp 11000 }}/
+  resources:
+    cpus: 0.1
+    memoryMb: 128
+    numPorts: 1
+  healthcheckUri: /
