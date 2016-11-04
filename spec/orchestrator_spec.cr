@@ -28,9 +28,7 @@ Spec2.describe Deployinator::Orchestrator do
 
   describe "Waiting on results" do
     class StubbedOrchestrator < Deployinator::Orchestrator
-      def pending_deploy(deploy_request)
-        {:good, nil}
-      end
+      mock({pending_deploy: {:good, nil}})
     end
 
     let(deployer) { StubbedOrchestrator.new(

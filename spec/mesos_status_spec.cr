@@ -2,17 +2,13 @@ require "./spec_helper"
 
 Spec2.describe Deployinator::MesosStatusManager do
   describe "Fetching Mesos task status" do
-    class StubbedMesosStatusManager < Deployinator::MesosStatusManager
-      def inner_fetch
-        Deployinator::MesosTaskWrapper.from_json(
-          File.read(
-            "spec/fixtures/mesos_status.json"
-          )
-        )
-      end
+    class StubMesosStatusManager < Deployinator::MesosStatusManager
+      mock({
+        inner_fetch: Deployinator::MesosTaskWrapper.from_json(File.read("spec/fixtures/mesos_status.json"))
+      })
     end
 
-    subject { StubbedMesosStatusManager.new("http://example.com") }
+    subject { StubMesosStatusManager.new("http://example.com") }
 
     it "has three tasks for an existing request" do
       expect(subject.fetch("nginx", "733215").size).to eq(3)
