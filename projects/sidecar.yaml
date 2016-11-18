@@ -6,6 +6,7 @@ deploy:
     docker:
       network: HOST
       image: gonitro/sidecar:latest
+      forcePullImage: true
       dockerParameters:
       - key: label
         value: SidecarDiscover=false

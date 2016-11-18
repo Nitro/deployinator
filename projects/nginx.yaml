@@ -1,6 +1,7 @@
 ---
 deploy:
   requestId: nginx
+  customExecutorCmd: /tmp/sidecar-executor
   containerInfo:
     type: DOCKER
     docker:

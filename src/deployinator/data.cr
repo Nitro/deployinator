@@ -22,6 +22,11 @@ module Deployinator
         type: Array(Hash(String, String | Int32)),
         key: "dockerParameters",
         nilable: true
+      },
+      force_pull_image: {
+        type: Bool,
+        key: "forcePullImage",
+        nilable: true
       }
     })
   end
@@ -43,7 +48,13 @@ module Deployinator
       id: { type: String, nilable: true },
       container_info: { type: ContainerInfo, key: "containerInfo" },
       resources: Hash(String, Int32 | Float64),
-      healthcheck_uri: { type: String, key: "healthcheckUri" },
+      healthcheck_uri: { type: String, key: "healthcheckUri", nilable: true },
+      deploy_health_timeout_seconds: { type: Int64, key: "deployHealthTimeoutSeconds", nilable: true },
+      healthcheck_interval_seconds: { type: Int64, key: "healthcheckIntervalSeconds", nilable: true },
+      healthcheck_timeout_seconds: { type: Int64, key: "healthcheckTimeoutSeconds", nilable: true },
+      healthcheck_port_index: { type: Int32, key: "healthcheckPortIndex", nilable: true },
+      healthcheck_max_retries: { type: Int32, key: "healthcheckMaxRetries", nilable: true },
+      healthcheck_max_total_timeout_seconds: { type: Int64, key: "healthcheckMaxTotalTimeoutSeconds", nilable: true },
 
       deploy_instance_count_per_step: {
         type: Int32,
@@ -59,6 +70,12 @@ module Deployinator
         type: Bool,
         nilable: true,
         key: "autoAdvanceDeploySteps"
+      },
+
+      custom_executor_command: {
+        key: "customExecutorCmd",
+        type: String,
+        nilable: true
       }
     })
   end
