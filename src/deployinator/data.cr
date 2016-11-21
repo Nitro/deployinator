@@ -169,8 +169,18 @@ module Deployinator
     translation_map({
       deploy_state: { type: String, key: "deployState" },
       message: { type: String, nilable: true },
-      deploy_failures: { type: Array(String), key: "deployFailures" },
+      deploy_failures: {
+        type: Array(DeploymentFailure),
+        key: "deployFailures",
+        nilable: true
+      },
       timestamp: Int32
+    })
+  end
+
+  struct DeploymentFailure
+    translation_map({
+      reason: String
     })
   end
 

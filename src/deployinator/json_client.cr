@@ -17,7 +17,11 @@ module Deployinator
         raise InvalidResponse.new(result.body)
       end
 
-      @type.from_json(result.body)
+      begin
+        @type.from_json(result.body)
+      rescue e : JSON::ParseException
+        raise InvalidResponse.new("Error: #{e.message} Got: '#{result.body}'\n#{caller.join("\n")}")
+      end
     end
 
     # CLASS methods
