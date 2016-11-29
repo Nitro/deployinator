@@ -13,7 +13,7 @@ deploy:
       - key: cap-add
         value: NET_ADMIN
       - key: env
-        value: SIDECAR_SEEDS=10.3.18.24 10.3.19.17
+        value: SIDECAR_SEEDS=10.3.18.87 10.3.13.169
       - key: env
         value: SIDECAR_LOGGING_LEVEL=info
     volumes:

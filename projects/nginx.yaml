@@ -21,6 +21,10 @@ deploy:
           value: HealthCheck=HttpGet
         - key: label
           value: HealthCheckArgs=http://{{ host }}:{{ tcp 11000 }}/
+    volumes:
+    - containerPath: "/tmp/foo"
+      hostPath: "/tmp/foo"
+      mode: RO
   resources:
     cpus: 0.1
     memoryMb: 128

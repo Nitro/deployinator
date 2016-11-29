@@ -2,8 +2,8 @@ require "time"
 require "option_parser"
 require "./src/deployinator"
 
-singularity_base_url = "http://dev-singularity-sick-sing.uw2.nitro.us:7099"
-mesos_base_url = "http://dev-singularity-regular-throat.uw2.nitro.us:5050"
+singularity_base_url = "http://dev-singularity-fluffy-cancel.uw2.nitro.us:7099"
+mesos_base_url = "http://dev-singularity-implicit-county.uw2.nitro.us:5050"
 project  = ""
 
 OptionParser.parse! do |parser|

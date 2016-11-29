@@ -47,7 +47,7 @@ module Deployinator
           :red
         end
 
-        puts "#{t.id}: #{status.colorize(:green)}"
+        puts "#{t.id}: #{status.colorize(color)}"
       end
       print_hr
     end
