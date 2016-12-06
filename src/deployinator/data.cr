@@ -76,7 +76,9 @@ module Deployinator
         key: "customExecutorCmd",
         type: String,
         nilable: true
-      }
+      },
+
+      env: { type: Hash(String, String), nilable: true }
     })
   end
 

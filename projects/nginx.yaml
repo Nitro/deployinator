@@ -1,7 +1,9 @@
 ---
 deploy:
   requestId: nginx
-  customExecutorCmd: /home/kmatthias/sidecar-executor
+  customExecutorCmd: /opt/mesos/executor.sh
+  env:
+    EXECUTOR_SIDECAR_BACKOFF: 1m5s    
   containerInfo:
     type: DOCKER
     docker:
