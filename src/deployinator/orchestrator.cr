@@ -20,6 +20,9 @@ module Deployinator
 
       mesos_tasks = fetch_mesos_tasks(deploy_request)
       @output.print_mesos_tasks(mesos_tasks)
+
+      # Return false on any task failure
+      !mesos_tasks.any? { |t| t.statuses.any? { |s| s.state !~ /TASK_RUNNING/ } }
     end
 
     def prepare_payload(filename)
