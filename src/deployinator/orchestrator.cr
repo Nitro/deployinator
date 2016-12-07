@@ -18,8 +18,6 @@ module Deployinator
       history = get_completion_status(deploy_request)
       @output.print_final_status(history)
 
-      history.deploy_result.deploy_state == "SUCCEEDED"
-
       mesos_tasks = fetch_mesos_tasks(deploy_request)
       @output.print_mesos_tasks(mesos_tasks)
     end
