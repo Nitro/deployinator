@@ -13,7 +13,11 @@ module Deployinator
         client.get(path)
       end
 
-      unless self.class.valid_response?(result)
+      if self.class.redir_response?(result)
+        raise InvalidResponse.new(result.body) unless result.headers["Location"]
+        uri = URI.parse(result.headers["Location"])
+        return get("http://#{uri.host}:#{uri.port}/", uri.path.to_s)
+      elsif !self.class.valid_response?(result)
         raise InvalidResponse.new(result.body)
       end
 
@@ -35,6 +39,10 @@ module Deployinator
       end
 
       result.status_code
+    end
+
+    def self.redir_response?(result)
+      result.status_code >= 300 && result.status_code < 400
     end
 
     def self.valid_response?(result)
