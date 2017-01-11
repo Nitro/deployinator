@@ -14,18 +14,26 @@ module Deployinator
       end
 
       if self.class.redir_response?(result)
-        raise InvalidResponse.new(result.body) unless result.headers["Location"]
-        uri = URI.parse(result.headers["Location"])
-        return get("http://#{uri.host}:#{uri.port}/", uri.path.to_s)
-      elsif !self.class.valid_response?(result)
+        return handle_redirect(result)
+      end
+
+      unless self.class.valid_response?(result)
         raise InvalidResponse.new(result.body)
       end
 
-      begin
-        @type.from_json(result.body)
-      rescue e : JSON::ParseException
-        raise InvalidResponse.new("Error: #{e.message} Got: '#{result.body}'\n#{caller.join("\n")}")
-      end
+      handle_success(result)
+    end
+
+    def handle_redirect(result)
+      raise InvalidResponse.new(result.body) unless result.headers["Location"]
+      uri = URI.parse(result.headers["Location"])
+      return get("http://#{uri.host}:#{uri.port}/", uri.path.to_s)
+    end
+
+    def handle_success(result)
+      @type.from_json(result.body)
+    rescue e : JSON::ParseException
+      raise InvalidResponse.new("Error: #{e.message} Got: '#{result.body}'\n#{caller.join("\n")}")
     end
 
     # CLASS methods
